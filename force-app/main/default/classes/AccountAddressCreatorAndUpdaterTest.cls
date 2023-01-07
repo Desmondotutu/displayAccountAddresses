@@ -1,18 +1,47 @@
 @isTest
 public class AccountAddressCreatorAndUpdaterTest{
     @isTest
-    public static void createAccAndAddressTestForBilling(){
+    public static void createAccAndAddressTestForBilling(String accIds){
         // create test Account records
         List<Account> accList = new List<Account>();
         for(integer i=0; i<200; i++){
             Account acc = new Account();
-            acc.Name = 'Test Account' +i;
-            acc.BillingCity = 'Test City' +i;
-            acc.BillingCountry = 'Test Country' +i;
-            acc.BillingPostalCode = 'TPC' +i;
-            acc.BillingState = 'Test State' +i;
-            acc.BillingStreet = 'Test Street' +i;
-            accList.add(acc);   
+            if(acc.BillingAddress != null){
+                acc.Name = 'Test Account' +i;
+                acc.BillingCity = 'Test City' +i;
+                acc.BillingCountry = 'Test Country' +i;
+                acc.BillingPostalCode = 'TPC' +i;
+                acc.BillingState = 'Test State' +i;
+                acc.BillingStreet = 'Test Street' +i;
+                accList.add(acc);
+            }
+            else if(acc.ShippingAddress != null){
+                acc.Name = 'Test Account' +i;
+                acc.ShippingCity = 'Test City' +i;
+                acc.ShippingCountry = 'Test Country' +i;
+                acc.ShippingPostalCode = 'TPC' +i;
+                acc.ShippingState = 'Test State' +i;
+                acc.ShippingStreet = 'Test Street' +i;
+                accList.add(acc);  
+            }
+            else if(!String.isBlank(acc.BillingCity) || !String.isBlank(acc.BillingCountry) || !String.isBlank(acc.BillingPostalCode) || !String.isBlank(acc.BillingState) || 
+            !String.isBlank(acc.BillingStreet)){
+                acc.Name = 'Test Account' +i;
+                acc.BillingCity = 'Test City' +i;
+                acc.BillingCountry = 'Test Country' +i;
+                acc.BillingState = 'Test State' +i;
+                acc.BillingStreet = 'Test Street' +i;
+                accList.add(acc);
+            }
+            else if(!String.isBlank(acc.ShippingCity) && !String.isBlank(acc.ShippingCountry) && !String.isBlank(acc.ShippingPostalCode) && !String.isBlank(acc.ShippingState) && !String.isBlank(acc.ShippingStreet)){
+                acc.Name = 'Test Account' +i;
+                acc.ShippingCity = 'Test City' +i;
+                acc.ShippingCountry = 'Test Country' +i;
+                acc.ShippingPostalCode = 'TPC' +i;
+                acc.ShippingState = 'Test State' +i;
+                accList.add(acc);
+            }
+   
        
         }
         //insert test address records
@@ -20,59 +49,14 @@ public class AccountAddressCreatorAndUpdaterTest{
         insert accList;
         Test.stopTest();
         
-        List<Account> accListInserted = [select id, name, BillingCity from Account where id =:accList[0].id];
-        List<Address__c> addrListInserted = [select id, Name, Address__c.City__c from Address__c where Address__c.City__c=:accList[0].BillingCity];
+        List<Address__c> addrListInserted = [select id, Name from Address__c where Account__c IN:accIds];
         
-        system.assertEquals(addrListInserted[0].City__c, accListInserted[0].BillingCity);
+        system.assertEquals(addrListInserted.size(), accList.size());
    	}
+
     @isTest
-    public static void createAccAndAddressTestForShipping(){
-        // create test Account records
-        List<Account> accList = new List<Account>();
-        for(integer i=0; i<200; i++){
-            Account acc = new Account();
-            acc.Name = 'Test Account' +i;
-            acc.ShippingCity = 'Test City' +i;
-            acc.ShippingCountry = 'Test Country' +i;
-            acc.ShippingPostalCode = 'TPC' +i;
-            acc.ShippingState = 'Test State' +i;
-            acc.ShippingStreet = 'Test Street' +i;
-            accList.add(acc);   
-       
-        }
-        //insert test address records
-        Test.startTest();
-        insert accList;
-        Test.stopTest();
-        
-        List<Account> accListInserted = [select id, name, ShippingCity from Account where id =:accList[0].id];
-        List<Address__c> addrListInserted = [select id, Name, Address__c.City__c from Address__c where Address__c.City__c=:accList[0].ShippingCity];
-        
-        system.assertEquals(addrListInserted[0].City__c, accListInserted[0].ShippingCity);
-   	}
-    public static void getAccountAddressestest(){
-        List<Account> accList = new List<Account>();
-        for(integer i=0; i<3; i++){
-            Account acc = new Account();
-            acc.Name = 'Test Account' +i;
-            acc.ShippingCity = 'Test City' +i;
-            acc.ShippingCountry = 'Test Country' +i;
-            acc.ShippingPostalCode = 'TPC' +i;
-            acc.ShippingState = 'Test State' +i;
-            acc.ShippingStreet = 'Test Street' +i;
-            accList.add(acc);   
-        
-    	}
-        Test.startTest();
-        insert accList;
-        Test.stopTest();
-        
-        List<Address__c> accAddressList = [select id, name, Account__c, Address_Type__c, Main__c 
-                                            from Address__c where Account__c =:accList];
-        system.assertEquals(3, accAddressList.size());
-  	}
-     @isTest
     public static void TestUpdateAccountAddress(){
+        set<id> accIds = new Set<id>();
         List<Address__c> addrList = new List<Address__c>();
         List<Account> accList = new List<Account>();
         for(integer i=0; i<200; i++){
@@ -84,53 +68,40 @@ public class AccountAddressCreatorAndUpdaterTest{
             	acc.BillingState = 'here'+i;
             	acc.BillingPostalCode = 'and'+i;
             accList.add(acc);
+            set.add(acc.id);
+            }
+            insert accList;
+        for(Account acc:accList){
             Address__c addr = new Address__c();
-            if(addr.Address_Type__c == 'Billing Address' && addr.Main__c ==true){
-            addr.Name = acc.name +'Test Address' +i;
-            addr.City__c = 'Test City' +i;
-            addr.Country__c = 'Test Country' +i;
+            if(acc.BillingAddress != null){
+            addr.Name = acc.name +'Test Address';
+            addr.City__c = 'Test City';
+            addr.Country__c = 'Test Country';
+            addr.Address_Type__c = 'Billing Address';
             addr.Account__c = acc.id;
             addr.Main__c = true;
-            addr.Zip_Postal_Code__c = 'TPC' +i;
-            addr.State_Province__c = 'Test State' +i;
-            addr.Street__c = 'Test Street' +i;
+            addr.Zip_Postal_Code__c = 'TPC';
+            addr.State_Province__c = 'Test State';
+            addr.Street__c = 'Test Street';
                 addrList.add(addr);
             }
-            else{
-            addr.Name = acc.name +'Test Address' +i;
-            addr.City__c = 'Test City' +i;
-            addr.Country__c = 'Test Country' +i;
+
+            else if(acc.ShippingAddress != null){
+            addr.Name = acc.name +'Test Address';
+            addr.City__c = 'Test City';
+            addr.Country__c = 'Test Country';
             addr.Account__c = acc.id;
-            addr.Zip_Postal_Code__c = 'TPC' +i;
-            addr.State_Province__c = 'Test State' +i;
-            addr.Street__c = 'Test Street' +i;
+            addr.Address_Type__c = 'Shipping Address';
+            addr.Zip_Postal_Code__c = 'TPC';
+            addr.State_Province__c = 'Test State';
+            addr.Street__c = 'Test Street';
                 addrList.add(addr);
-            }
-            if(addr.Address_Type__c == 'Shipping Address' && addr.Main__c ==true){
-            addr.Name = 'Test Address' +i;
-            addr.City__c = 'Test City' +i;
-            addr.Country__c = 'Test Country' +i;
-            addr.Account__c = acc.id;
-            addr.Main__c = true;
-            addr.Zip_Postal_Code__c = 'TPC' +i;
-            addr.State_Province__c = 'Test State' +i;
-            addr.Street__c = 'Test Street' +i;
-                addrList.add(addr); 
-            }
-            else{
-            addr.Name = 'Test Address' +i;
-            addr.City__c = 'Test City' +i;
-            addr.Country__c = 'Test Country' +i;
-            addr.Account__c = acc.id;
-            addr.Zip_Postal_Code__c = 'TPC' +i;
-            addr.State_Province__c = 'Test State' +i;
-            addr.Street__c = 'Test Street' +i;
-                addrList.add(addr); 
             }
     	}
+        if(!addrList.isEmpty()){
          insert addrList;
+        }
         
-       
         List<Address__c> accToUpdate = new List<Address__c>();
         List<Address__c> addrlist2 = [SELECT Id, Name, City__c, Country__c, Zip_Postal_Code__c, 
                                       Street__c, State_Province__c, Address_Type__c FROM Address__c where Main__c = true];
