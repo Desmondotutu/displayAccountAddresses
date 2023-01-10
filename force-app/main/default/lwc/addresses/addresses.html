@@ -1,22 +1,25 @@
 <template>
-    <lightning-modal-header label="Account Addresses">
+    <lightning-modal-header label="Account Addresses" icon-name="custom:custom62">
     </lightning-modal-header>
     <lightning-modal-body>
+        <lightning-card icon-name="custom:custom62">
         <div class="slds-var-m-around_medium">
             <template if:true={addresses.data}>
-                <lightning-datatable
-                    key-field="Id"
-                    data={addresses.data}
-                    columns={columns}
-                    onsave={handleSave}
-                    draft-values={draftValues}
-                    onrowselection={getSelectedId}>
-                    
-                </lightning-datatable>
+            <lightning-datatable
+                key-field="Id"
+                data={addresses.data}
+                columns={columns}
+                onsave={handleSave}
+                draft-values={draftValues}
+                onrowselection={getSelectedId}
+            >
+            </lightning-datatable>
             </template>
         </div>
+        </lightning-card>
     </lightning-modal-body>
     <lightning-modal-footer>
-        <lightning-button label="Delete" onclick={handleDelete}> </lightning-button> <c-nav-to-new-record></c-nav-to-new-record>
-    </lightning-modal-footer>
+    <lightning-button label="Delete" onclick={handleDelete}> </lightning-button>
+    <c-nav-to-new-record></c-nav-to-new-record>
+  </lightning-modal-footer>
 </template>
