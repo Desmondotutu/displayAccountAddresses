@@ -5,12 +5,13 @@
 * @last modified on  : 03-01-2023
 * @last modified by  : desmondwangki@hicorp.com
 **/
-trigger MainAddressUpdater on Address__c ( after update) {
+trigger MainAddressUpdater on Address__c ( before insert, before update, after update) {
     if (Trigger.isAfter){ 
         if (Trigger.isUpdate) {
             AccountAdressHandler.onUpdateAddresses(Trigger.newMap, Trigger.oldMap);
-            
-        }
+
+    }
+
     }
     
 }

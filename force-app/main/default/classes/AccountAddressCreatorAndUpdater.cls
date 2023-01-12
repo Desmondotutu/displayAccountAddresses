@@ -19,25 +19,22 @@ public with sharing class AccountAddressCreatorAndUpdater {
                                 ShippingCountry, ShippingPostalCode, ShippingStreet, ShippingState FROM Account WHERE Id IN :AccountIds]){
                 if(acc.BillingCity != null && acc.BillingCountry != null && acc.BillingPostalCode != null && acc.BillingState != null && acc.BillingStreet != null){
                     Address__c billingaddress = 
-                        new Address__c(Name = acc.Name+' Billing Address', Main__c = TRUE, Account__c = acc.Id, Address_Type__c = 'Billing Address', City__c = acc.BillingCity, 
+                        new Address__c(Name = acc.Name+'Billing Address', Main__c = TRUE, Account__c = acc.Id, Address_Type__c = 'Billing Address', City__c = acc.BillingCity, 
                                         Country__c = acc.BillingCountry, State_Province__c = acc.BillingState, Street__c = acc.BillingStreet, Zip_Postal_Code__c = acc.BillingPostalCode);
                     newAddresses.add(billingaddress);    
                     
-                } else if (!String.isBlank(acc.BillingCity) || !String.isBlank(acc.BillingCountry) || !String.isBlank(acc.BillingPostalCode) || !String.isBlank(acc.BillingState) || 
-                            !String.isBlank(acc.BillingStreet)) {
+                }if (!String.isBlank(acc.BillingCity) || !String.isBlank(acc.BillingCountry) || !String.isBlank(acc.BillingPostalCode) || !String.isBlank(acc.BillingState) || !String.isBlank(acc.BillingStreet)) {
                     Address__c billingaddress = new Address__c(Name = acc.Name+' Billing Address', Account__c = acc.Id, Address_Type__c = 'Billing Address', City__c = acc.BillingCity, 
                                                                 Country__c = acc.BillingCountry, State_Province__c = acc.BillingState, Street__c = acc.BillingStreet, Zip_Postal_Code__c = acc.BillingPostalCode);
                     newAddresses.add(billingaddress);
                 }
                 
-                if (!String.isBlank(acc.ShippingCity) && !String.isBlank(acc.ShippingCountry) && !String.isBlank(acc.ShippingPostalCode) && !String.isBlank(acc.ShippingState) && !String.isBlank(acc.ShippingStreet)) {
-                    Address__c shippingaddress =  new Address__c(Name = acc.Name+' Shipping Address', Main__c = TRUE, Account__c = acc.Id, Address_Type__c = 'Shipping Address', City__c = acc.ShippingCity, 
-                                                                    Country__c = acc.ShippingCountry, State_Province__c = acc.ShippingState, Street__c = acc.ShippingStreet, Zip_Postal_Code__c = acc.ShippingPostalCode);
+                if (acc.ShippingCity != null && acc.ShippingCountry != null && acc.ShippingPostalCode != null && acc.ShippingState != null && acc.ShippingStreet != null) {
+                    Address__c shippingaddress =  new Address__c(Name = acc.Name+' Shipping Address', Main__c = TRUE, Account__c = acc.Id, Address_Type__c = 'Shipping Address', City__c = acc.ShippingCity, Country__c = acc.ShippingCountry, State_Province__c = acc.ShippingState, Street__c = acc.ShippingStreet, Zip_Postal_Code__c = acc.ShippingPostalCode);
                     newAddresses.add(shippingaddress);
 
-                } else if (!String.isBlank(acc.ShippingCity) || !String.isBlank(acc.ShippingCountry) || !String.isBlank(acc.ShippingPostalCode) || !String.isBlank(acc.ShippingState) || !String.isBlank(acc.ShippingStreet)) {
-                    Address__c shippingaddress = new Address__c(Name = acc.Name+' Shipping Address', Account__c = acc.Id, Address_Type__c = 'Shipping Address', City__c = acc.ShippingCity, Country__c = acc.ShippingCountry, 
-                                                                State_Province__c = acc.ShippingState, Street__c = acc.ShippingStreet, Zip_Postal_Code__c = acc.ShippingPostalCode);
+                } if(!String.isBlank(acc.ShippingCity) || !String.isBlank(acc.ShippingCountry) || !String.isBlank(acc.ShippingPostalCode) || !String.isBlank(acc.ShippingState) || !String.isBlank(acc.ShippingStreet)) {
+                    Address__c shippingaddress = new Address__c(Name = acc.Name+' Shipping Address', Account__c = acc.Id, Address_Type__c = 'Shipping Address', City__c = acc.ShippingCity, Country__c = acc.ShippingCountry, State_Province__c = acc.ShippingState, Street__c = acc.ShippingStreet, Zip_Postal_Code__c = acc.ShippingPostalCode);
                     newAddresses.add(shippingaddress);
                 }
             }
@@ -71,7 +68,7 @@ public with sharing class AccountAddressCreatorAndUpdater {
                                 addr.State_Province__c = a.BillingState;
                                 addressToUpdate.add(addr);
                             } 
-                            else if (addr.Address_Type__c == 'Shipping Address') {
+                            else if(addr.Address_Type__c == 'Shipping Address'){
                                 addr.City__c = a.ShippingCity;
                                 addr.Country__c = a.ShippingCountry;
                                 addr.Zip_Postal_Code__c = a.ShippingPostalCode;

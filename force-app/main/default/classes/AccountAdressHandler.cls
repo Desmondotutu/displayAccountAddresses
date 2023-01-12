@@ -21,8 +21,7 @@ public with sharing class AccountAdressHandler {
         for(Address__c ad: newAddress.values()){
             if(ad.Main__c == true){
                 Address__c oldAdd =  oldAddress.get(ad.Id);           
-                if(ad.Address_Type__c == 'Billing Address'){
-                    if(ad.Street__c != oldAdd.Street__c && ad.Street__c != null && ad.Street__c != accData.get(ad.Account__c).BillingStreet ||
+                    if(ad.Address_Type__c == 'Billing Address' && ad.Street__c != oldAdd.Street__c && ad.Street__c != null && ad.Street__c != accData.get(ad.Account__c).BillingStreet ||
                       ad.Country__c != oldAdd.Street__c && ad.Street__c != null && ad.Country__c != accData.get(ad.Account__c).BillingCountry ||
                       ad.Zip_Postal_Code__c != oldAdd.Street__c && ad.Street__c != null && ad.Zip_Postal_Code__c != accData.get(ad.Account__c).BillingPostalCode ||
                       ad.City__c != oldAdd.Street__c && ad.Street__c != null && ad.City__c != accData.get(ad.Account__c).BillingCity ||
@@ -34,10 +33,8 @@ public with sharing class AccountAdressHandler {
                                 accData.get(ad.Account__c).BillingState = ad.State_Province__c;
                                 updateAccFromChildMain.add(accData.get(ad.Account__c));                      
                     }
-                }
 
-                else if(ad.Address_Type__c == 'Shipping Address'){
-                    if(ad.Street__c != oldAdd.Street__c && ad.Street__c != null && ad.Street__c != accData.get(ad.Account__c).ShippingStreet ||
+                    else if(ad.Address_Type__c == 'Shipping Address' && ad.Street__c != oldAdd.Street__c && ad.Street__c != null && ad.Street__c != accData.get(ad.Account__c).ShippingStreet ||
                       ad.Country__c != oldAdd.Street__c && ad.Street__c != null && ad.Country__c != accData.get(ad.Account__c).ShippingCountry ||
                       ad.Zip_Postal_Code__c != oldAdd.Street__c && ad.Street__c != null && ad.Zip_Postal_Code__c != accData.get(ad.Account__c).ShippingPostalCode ||
                       ad.City__c != oldAdd.Street__c && ad.Street__c != null && ad.City__c != accData.get(ad.Account__c).ShippingCity ||
@@ -52,7 +49,6 @@ public with sharing class AccountAdressHandler {
                 }
                 
             }
-        }
         
         if(!updateAccFromChildMain.isEmpty()){
             update updateAccFromChildMain;

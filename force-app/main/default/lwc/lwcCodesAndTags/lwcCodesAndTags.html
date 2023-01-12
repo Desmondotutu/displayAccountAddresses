@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Codes And Tags" icon-name="custom:custom14">
+    <h6>Codes And Tags</h6>
+    
+        <lightning-accordion allow-multiple-sections-open={multiple}>
+            <template if:true={CodesAndTags}>
+                <template for:each={CodesAndTags} for:item="cat">
+                    <lightning-accordion-section name={cat.Name} label={cat.Name} key={cat.Id}>
+                     </lightning-accordion-section>
+                </template>
+            </template>
+        </lightning-accordion>
+    
+    </lightning-card>
+    </template>

@@ -41,16 +41,15 @@ public class HelperClassTest {
         insert accList;
        
         List<Address__c> accToUpdate = new List<Address__c>();
-        List<Address__c> addrlist2 = [SELECT Id, Name, City__c, Country__c, Zip_Postal_Code__c, 
-                                      Street__c, State_Province__c FROM Address__c where Main__c = true];
-        for(Address__c addr2: addrlist2){
+        for(Address__c addr2: [SELECT Id, Name, City__c, Country__c, Zip_Postal_Code__c, 
+                                      Street__c, State_Province__c, Address_Type__c, Main__c FROM Address__c where Main__c = true]){
             if(addr2.Address_Type__c == 'Billing Address' && addr2.Main__c ==true){
                 addr2.City__c = 'Test go';
                 addr2.Country__c = 'Test g Country';
                 addr2.Zip_Postal_Code__c = 'TPCf';
                 addr2.State_Province__c = 'Test fdState';
                 addr2.Street__c = 'Test Svvtreet';
-                addrList2.add(addr2);
+                accToUpdate.add(addr2);
             }
             else if(addr2.Address_Type__c == 'Shipping Address' && addr2.Main__c ==true){
                 addr2.City__c = 'Test go';
@@ -58,7 +57,7 @@ public class HelperClassTest {
                 addr2.Zip_Postal_Code__c = 'TPCf';
                 addr2.State_Province__c = 'Test fdState';
                 addr2.Street__c = 'Test Svvtreet';
-                addrList2.add(addr2);
+                accToUpdate.add(addr2);
             }
 
 
@@ -71,6 +70,5 @@ public class HelperClassTest {
         
         List<Address__c> updatedAddrs = [select id, name, City__c from Address__c where City__c = 'Test go'];
         system.assertEquals(true, updatedAddrs.size()>0);
-
 }
 }
