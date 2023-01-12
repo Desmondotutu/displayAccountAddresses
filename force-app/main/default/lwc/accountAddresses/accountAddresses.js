@@ -1,52 +1,74 @@
 import {LightningElement,api,wire,track} from 'lwc';
-import getAccountData from '@salesforce/apex/AccountDemoController.getAccountData';
+import getAccountAddresses from '@salesforce/apex/AddressController.getAccountAddresses';
 import {deleteRecord} from 'lightning/uiRecordApi';
 import {refreshApex} from '@salesforce/apex';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-export default class accountAddresses extends LightningElement {
-    @track multiple = true;
-@track accounts ;
-@wire (getAccountData) getContact;
-@wire(getAccountData) 
-wiredAccountss({
-    error,
-    data
-}) {
-    if (data) {
-        this.accounts = data;
-        console.log(data);
-        console.log(JSON.stringify(data, null, '\t'));
-        
-        data.forEach(function (item, key) {
-            console.log(key); 
-            console.log(item); 
-        });
-        
-    } else if (error) {
-        this.error = error;
+import {NavigationMixin} from 'lightning/navigation';
+const actions = [
+    { label: 'Edit', name: 'edit' },
+    { label: 'Delete', name: 'Delete' },
+];
+ 
+const columns = [
+    { label: 'Name', fieldName: 'Address__c.Account__r.Name' },
+    { label: 'Address Type', fieldName: 'Address_Type__c' },
+    { label: 'Main', fieldName: 'Main__c' },
+    {type: 'action',
+    typeAttributes: { rowActions: actions },
+},
+];
+export default class accountAddresses extends NavigationMixin(LightningElement){
+    error;
+    @track columns = columns;
+    @api recordId;
+
+    @wire(getAccountAddresses, {recordId: '$recordId', columns})
+    addresses;
+    
+    handleClick() {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__objectPage',
+                attributes: {
+                    objectApiName: 'Address__c',
+                    actionName: 'new'
+                },
+            });
+        }
+        showNotification() {
+            const event = new ShowToastEvent({
+                title: 'Success',
+                message: 'Modification saved',
+                variant: 'warning',
+                mode: 'pester'
+            });
+            this.dispatchEvent(event);
+        }
+        handleRowAction( event ) {
+
+            const actionName = event.detail.action.name;
+            const row = event.detail.row;
+            switch ( actionName ) {
+                case 'Delete':
+                    this[NavigationMixin.Navigate]({
+                        type: 'standard__recordPage',
+                        attributes: {
+                            recordId: row.Id,
+                            actionName: 'delete'
+                        }
+                    });
+                    break;
+                case 'edit':
+                    this[NavigationMixin.Navigate]({
+                        type: 'standard__recordPage',
+                        attributes: {
+                            recordId: row.Id,
+                            objectApiName: 'Address__c',
+                            actionName: 'edit'
+                        }
+                    });
+                    break;
+                default:
+            }
+    
+        }
     }
-}
-//@wire (displayContactRecord) getContact;
-@track recordId;
-
-handleContactDelete(event){
-   this.recordId = event.target.value;
-   //window.console.log('recordId# ' + this.recordId);
-   deleteRecord(this.recordId) 
-   .then(() =>{
-
-      const toastEvent = new ShowToastEvent({
-          title:'Record Deleted',
-          message:'Record deleted successfully',
-          variant:'success',
-      })
-      this.dispatchEvent(toastEvent);
-
-      return refreshApex(this.getContact);
-      
-   })
-   .catch(error =>{
-       window.console.log('Unable to delete record due to ' + error.body.message);
-   });
-}
-}

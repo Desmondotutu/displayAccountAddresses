@@ -1,10 +1,8 @@
 public with sharing class AddressController {
 
     @AuraEnabled(cacheable=true)
-    public static List<Account> getAccountAddresses(String accId) {
-        return [select id, Name, website,  (select Name, Account__C, main__c, Address_type__c from Addresses__r)
-                from Account WITH SECURITY_ENFORCED
-        ];
+    public static List<Address__c> getAccountAddresses(String accId) {
+        return [select id, Name, Address__c.Account__r.Name, main__c, Address_type__c from Address__c WITH SECURITY_ENFORCED];
     }
     @AuraEnabled
     public static string updateAddresses(Object data) {

@@ -1,16 +1,12 @@
 <template>
-  <lightning-card title="Accordion Example with DELETE Option" icon-name="custom:custom14">
-  <h6>Accoridan Exmape</h6>
+  <lightning-button label=" New Address" onclick={handleClick}></lightning-button>
+  <lightning-datatable
+      data={addresses.data}
+      columns={columns}
+      key-field="id"
+      hide-checkbox-column="false"
+      show-row-number-column="false"
+      onrowaction={handleRowAction}>
+  </lightning-datatable>
   
-      <lightning-accordion allow-multiple-sections-open={multiple}>
-          <template if:true={accounts}>
-              <template for:each={accounts} for:item="acc">
-                  <lightning-accordion-section name={acc.Name} label={acc.Name} key={acc.Id}>
-  
-                   </lightning-accordion-section>
-              </template>
-          </template>
-      </lightning-accordion>
-  
-  </lightning-card>
-  </template>
+</template>

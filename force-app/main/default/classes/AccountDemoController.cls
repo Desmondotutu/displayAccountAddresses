@@ -21,6 +21,10 @@ public with sharing class AccountDemoController {
     public static List<Account> getAccountData() {
         return [SELECT Id,Name,(Select Id,Name,Email,Phone from Contacts) from Account];
     }
+    @AuraEnabled(cacheable=true)
+    public static List<Codes_And_Tags__c> getCodesAndTags() {
+       return [select name, Parent_Code__c, allocation__c, RecordTypeId from Codes_And_Tags__c];
+    }
     
 
 }

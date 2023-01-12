@@ -1,28 +1,29 @@
 import {LightningElement,api,wire,track} from 'lwc';
 import getCodesAndTags from '@salesforce/apex/CodesAndTagsController.getCodesAndTags';
-
-export default class lwcCodesAndTags extends LightningElement {
+import{NavigationMixin} from 'lightning/navigation';
+const columns = [
+    { label: 'Name', fieldName: 'Name' },
+    { label: 'Allocation', fieldName: 'allocation__c' },
+    { label: 'Parent Code', fieldName: 'Parent_Code__c' },
+]
+export default class lwcCodesAndTags extends NavigationMixin(LightningElement){
     @api recordId;
     @track multiple = true;
-    @track CodesAndTags ;
+    @track columns= columns;
+    @track errorMessage;
     @wire(getCodesAndTags)
-    wiredCodesAndTags({
-    error,
-    data
-}) {
-    if (data) {
-        this.CodesAndTags = data;
-        console.log(data);
-        console.log(JSON.stringify(data, null, '\t'));
-        
-        data.forEach(function (item, key) {
-            console.log(key); 
-            console.log(item); 
-        });
-        
-    } else if (error) {
-        this.error = error;
-    }
-}
+    CodesAndTags;
 
+    handleNext(event){
+
+    }
+    section = '';
+
+    handleClick(event) {
+        this.section = 'B';
+    }
+
+    handleSectionToggle(event) {
+        this.section = event.detail.openSections;
+    }
 }
