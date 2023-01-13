@@ -1,5 +1,8 @@
 <template>
+  <lightning-card title="Account Addresses" icon-name="custom:custom14">
+     <div class="slds-clearfix"></div>
   <lightning-button label=" New Address" onclick={handleClick}></lightning-button>
+  </div>
   <lightning-datatable
       data={addresses.data}
       columns={columns}
@@ -8,5 +11,5 @@
       show-row-number-column="false"
       onrowaction={handleRowAction}>
   </lightning-datatable>
-  
+</lightning-card>
 </template>

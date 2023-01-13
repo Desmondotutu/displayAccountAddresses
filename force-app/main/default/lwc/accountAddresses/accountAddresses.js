@@ -10,12 +10,9 @@ const actions = [
 ];
  
 const columns = [
-    { label: 'Name', fieldName: 'Address__c.Account__r.Name' },
+    { label: 'Name', fieldName: 'Name' },
     { label: 'Address Type', fieldName: 'Address_Type__c' },
     { label: 'Main', fieldName: 'Main__c' },
-    {type: 'action',
-    typeAttributes: { rowActions: actions },
-},
 ];
 export default class accountAddresses extends NavigationMixin(LightningElement){
     error;
@@ -23,7 +20,7 @@ export default class accountAddresses extends NavigationMixin(LightningElement){
     @api recordId;
 
     @wire(getAccountAddresses, {recordId: '$recordId', columns})
-    addresses;
+    accounts;
     
     handleClick() {
             this[NavigationMixin.Navigate]({
